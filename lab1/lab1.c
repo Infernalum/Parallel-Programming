@@ -1,3 +1,5 @@
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
@@ -8,9 +10,10 @@ int main(int argc, char** argv) {
 	const int threads = 16;
 	int random_seed = 920215;
 	const int expr = 10;
-	int  max;
+	int max;
 	double start, end;
 
+	printf("OPENMP version: %d", _OPENMP);
 	printf("count of threads: %d\n", threads);
 
 	for (int k = 0; k < expr; ++k) {
