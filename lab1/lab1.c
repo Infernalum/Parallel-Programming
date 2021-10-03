@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
@@ -7,13 +5,13 @@
 
 int main(int argc, char** argv) {
 	const int count = 1e8;
-	const int threads = 16;
+	const int threads = 8;
 	int random_seed = 920215;
 	const int expr = 10;
 	int max;
 	double start, end;
 
-	printf("OPENMP version: %d", _OPENMP);
+	//printf("OPENMP version: %d\n", _OPENMP);
 	printf("count of threads: %d\n", threads);
 
 	for (int k = 0; k < expr; ++k) {
@@ -44,12 +42,9 @@ int main(int argc, char** argv) {
 				{
 					if (array[i] > max) { max = array[i]; };
 				}
-				//printf("%d\n", omp_get_max_threads());
 			}
 			end = omp_get_wtime();
-
 			time = end - start;
-			//printf("======\nMax element for parallel function: %d, time: %f;\n", max, time);
 			all_time += time;
 		}
 		printf("Max element for parallel function:    %d, time: %f;\n", max, all_time / (double)expr);
