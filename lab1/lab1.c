@@ -5,13 +5,14 @@
 
 int main(int argc, char** argv) {
 	const int count = 1e8;
-	const int threads = 8;
+	const int threads = 16;
 	int random_seed = 920215;
 	const int expr = 10;
 	int max;
 	double start, end;
 
 	//printf("OPENMP version: %d\n", _OPENMP);
+	//printf("%d\n", omp_get_max_threads());
 	printf("count of threads: %d\n", threads);
 
 	for (int k = 0; k < expr; ++k) {
