@@ -5,11 +5,12 @@
             "label": "C/C++: gcc сборка активного файла",
             "command": "/usr/bin/gcc",
             "args": [
-                "-g",
+                //"-g",
+                "-O2",
+                "-fopenmp",
                 "${file}",
                 "-o",
                 "${fileDirname}/build/${fileBasenameNoExtension}",
-                "-fopenmp"
             ],
             "options": {
                 "cwd": "${fileDirname}"
