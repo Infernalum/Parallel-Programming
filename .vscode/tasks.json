@@ -6,7 +6,7 @@
             "command": "/usr/bin/gcc",
             "args": [
                 //"-g",
-                //"-O2",
+                "-O2",
                 "-fopenmp",
                 "${file}",
                 "-o",
