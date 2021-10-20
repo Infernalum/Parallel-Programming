@@ -68,8 +68,8 @@ int main(int argc, char **argv)
 #pragma omp for
                 for (p = 0; p < threads; p++)
                 {
-                    //for (int j = p * (count / threads); j < (p + 1) * (count / threads); ++j)
-                    for (int j = p; j < count; j = j + threads)
+                    for (int j = p * (count / threads); j < (p + 1) * (count / threads); ++j)
+                    //for (int j = p; j < count; j = j + threads)
                     {
                         if (flag == 1)
                             break;
