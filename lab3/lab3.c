@@ -4,11 +4,11 @@
 #include <omp.h>
 
 #define _THREADS 5
-#define _SIZE 1e7
+#define _SIZE 1e6
 #define _ARRAYS 1
 #define _FREQUENCY 0.1
 
-int comp(const void *elem1, const void *elem2)
+int comporator(const void *elem1, const void *elem2)
 {
     int f = *((int *)elem1);
     int s = *((int *)elem2);
@@ -19,7 +19,7 @@ int comp(const void *elem1, const void *elem2)
     return 0;
 }
 
-int isEquals(int *array1, int *array2)
+int isEqual(int *array1, int *array2)
 {
     for (int i = 0; i < _SIZE; ++i)
         if (array1[i] != array2[i])
@@ -61,7 +61,7 @@ int *InsertionSort(int *array)
     //    printf("%d, ", object[i]);
     //printf("\n");
     printf("Insertion Sort time: \t\t%.8f;\n", end - start);
-    printf("Is it sorted? - \t%d;\n", isSort(object));
+    //printf("Is it sorted? - \t%d;\n", isSort(object));
     return object;
 }
 
@@ -101,7 +101,7 @@ int *ShellSort(int *array)
     //    printf("%d, ", object[i]);
     //printf("\n");
     printf("Shell Sort time: \t\t%.8f;\n", end - start);
-    printf("Is it sorted? - \t%d;\n", isSort(object));
+    //printf("Is it sorted? - \t%d;\n", isSort(object));
     return object;
 }
 
@@ -113,7 +113,7 @@ int *ShellParallelSort(int *array)
     double start, end;
     start = omp_get_wtime();
 
-omp_set_num_threads(_THREADS);
+    omp_set_num_threads(_THREADS);
 #pragma omp parallel shared(object)
     {
         for (int step = _SIZE / 2; step > 0; step /= 2)
@@ -157,15 +157,10 @@ omp_set_num_threads(_THREADS);
 int main(int argc, char **argv)
 {
     int seed = 915482;
-    double start = 0, end = 0, _time = 0;
+    double start = 0, end = 0, _time = 0, avarage_consecutive_time = 0, avarage_time = 0;
     double consecutive_time = 0, parallel_time = 0;
     double average_time = 0;
-
-    int *array = 0;
-    int *pattern = 0;
-    int *cmp1 = 0;
-    int *cmp2 = 0;
-    int *cmp3 = 0;
+    int *array = 0, *pattern = 0, *cmp1 = 0, *cmp2 = 0, *cmp3 = 0;
     for (int i = 0; i < _ARRAYS; ++i)
     {
         printf("seed: %d;\n", seed);
@@ -179,21 +174,21 @@ int main(int argc, char **argv)
 
         double start, end;
         start = omp_get_wtime();
-        qsort(pattern, _SIZE, sizeof(*pattern), comp);
+        qsort(pattern, _SIZE, sizeof(*pattern), comporator);
         end = omp_get_wtime();
         //for (int i = 0; i < _SIZE; ++i)
         //    printf("%d, ", array[i]);
         //printf("\n");
-        printf("QuickSort time: \t\t%.8f;\nIs it sorted? - %d;\n", end - start, isSort(pattern));
+        //printf("QuickSort time: \t\t%.8f;\nIs it sorted? - %d;\n", end - start, isSort(pattern));
         //cmp1 = InsertionSort(array);
-        //printf("Are they equal? - \t%d;\n", isEquals(cmp1, pattern));
+        //printf("Are they equal? - \t%d;\n", isEqual(cmp1, pattern));
         cmp2 = ShellSort(array);
-        printf("Are they equal? - \t%d;\n", isEquals(cmp2, pattern));
+        //printf("Are they equal? - \t%d;\n", isEqual(cmp2, pattern));
         cmp3 = ShellParallelSort(array);
-        printf("Are they equal? - \t%d;\n", isEquals(cmp3, pattern));
+        //printf("Are they equal? - \t%d;\n", isEqual(cmp3, pattern));
         seed += 1000;
         free(array);
-        free(cmp1);
+        //free(cmp1);
         free(cmp2);
         free(cmp3);
     }
