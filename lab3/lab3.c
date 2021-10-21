@@ -3,10 +3,11 @@
 #include <time.h>
 #include <omp.h>
 
-#define _THREADS 5
-#define _SIZE 1e6
-#define _ARRAYS 1
-#define _FREQUENCY 0.1
+#define _THREADS 8
+#define _SIZE 1e7
+#define _ARRAYS 10
+#define _FREQUENCY 1
+#define _MEASUREMENTS 1
 
 int comporator(const void *elem1, const void *elem2)
 {
@@ -35,7 +36,7 @@ int isSort(int *array)
     return 1;
 }
 
-int *InsertionSort(int *array)
+double InsertionSort(int *array)
 {
     int *object = (int *)malloc(sizeof(int) * _SIZE);
     for (int i = 0; i < _SIZE; ++i)
@@ -60,12 +61,13 @@ int *InsertionSort(int *array)
     //for (int i = 0; i < _SIZE; ++i)
     //    printf("%d, ", object[i]);
     //printf("\n");
-    printf("Insertion Sort time: \t\t%.8f;\n", end - start);
+    //printf("Insertion Sort time: \t\t%.8f;\n", end - start);
     //printf("Is it sorted? - \t%d;\n", isSort(object));
-    return object;
+    free(object);
+    return end - start;
 }
 
-int *ShellSort(int *array)
+double ShellSort(int *array)
 {
     int *object = (int *)malloc(sizeof(int) * _SIZE);
     for (int i = 0; i < _SIZE; ++i)
@@ -100,12 +102,13 @@ int *ShellSort(int *array)
     //for (int i = 0; i < size; ++i)
     //    printf("%d, ", object[i]);
     //printf("\n");
-    printf("Shell Sort time: \t\t%.8f;\n", end - start);
+    //printf("Shell Sort time: \t\t%.8f;\n", end - start);
     //printf("Is it sorted? - \t%d;\n", isSort(object));
-    return object;
+    free(object);
+    return (end - start);
 }
 
-int *ShellParallelSort(int *array)
+double ShellParallelSort(int *array)
 {
     int *object = (int *)malloc(sizeof(int) * _SIZE);
     for (int i = 0; i < _SIZE; ++i)
@@ -149,48 +152,56 @@ int *ShellParallelSort(int *array)
     //for (int i = 0; i < _SIZE; ++i)
     //    printf("%d, ", object[i]);
     //printf("\n");
-    printf("Shell Parallel Sort time: \t%.8f;\n", end - start);
-    printf("Is it sorted? - \t%d;\n", isSort(object));
-    return object;
+    //printf("Shell Parallel Sort time: \t%.8f;\n", end - start);
+    //printf("Is it sorted? - \t%d;\n", isSort(object));
+    free(object);
+    return (end - start);
 }
 
 int main(int argc, char **argv)
 {
-    int seed = 915482;
-    double start = 0, end = 0, _time = 0, avarage_consecutive_time = 0, avarage_time = 0;
+    int seed = 666666;
     double consecutive_time = 0, parallel_time = 0;
-    double average_time = 0;
-    int *array = 0, *pattern = 0, *cmp1 = 0, *cmp2 = 0, *cmp3 = 0;
+    int *array = 0;
+    //int *pattern = 0, *cmp1 = 0, *cmp2 = 0, *cmp3 = 0;
+
     for (int i = 0; i < _ARRAYS; ++i)
     {
-        printf("seed: %d;\n", seed);
+        //printf("seed: \t%d;\n", seed);
         srand(seed);
         array = (int *)malloc(_SIZE * sizeof(int));
         for (int i = 0; i < _SIZE; i++)
             array[i] = rand() % (int)(_SIZE / _FREQUENCY + 1 - 0) + 0;
-        pattern = (int *)malloc(_SIZE * sizeof(int));
-        for (int i = 0; i < _SIZE; ++i)
-            pattern[i] = array[i];
+        //pattern = (int *)malloc(_SIZE * sizeof(int));
+        //for (int i = 0; i < _SIZE; ++i)
+        //    pattern[i] = array[i];
 
-        double start, end;
-        start = omp_get_wtime();
-        qsort(pattern, _SIZE, sizeof(*pattern), comporator);
-        end = omp_get_wtime();
+        //start = omp_get_wtime();
+        //qsort(pattern, _SIZE, sizeof(*pattern), comporator);
+        //end = omp_get_wtime();
         //for (int i = 0; i < _SIZE; ++i)
         //    printf("%d, ", array[i]);
         //printf("\n");
         //printf("QuickSort time: \t\t%.8f;\nIs it sorted? - %d;\n", end - start, isSort(pattern));
         //cmp1 = InsertionSort(array);
         //printf("Are they equal? - \t%d;\n", isEqual(cmp1, pattern));
-        cmp2 = ShellSort(array);
-        //printf("Are they equal? - \t%d;\n", isEqual(cmp2, pattern));
-        cmp3 = ShellParallelSort(array);
-        //printf("Are they equal? - \t%d;\n", isEqual(cmp3, pattern));
+        for (int j = 0; j < _MEASUREMENTS; ++j)
+        {
+            consecutive_time += ShellSort(array);
+            //printf("Are they equal? - \t%d;\n", isEqual(cmp2, pattern));
+            parallel_time += ShellParallelSort(array);
+            //printf("Are they equal? - \t%d;\n", isEqual(cmp3, pattern));
+        }
+        //free(cmp1);
+        //(cmp2);
+        //free(cmp3);
         seed += 1000;
         free(array);
-        //free(cmp1);
-        free(cmp2);
-        free(cmp3);
+        //printf("\n");
     }
+    consecutive_time /= (_MEASUREMENTS * _ARRAYS);
+    parallel_time /= (_MEASUREMENTS * _ARRAYS);
+    printf("Consecutive time: \t%.5f\n", consecutive_time);
+    printf("Parallel time: \t%.5f\n", parallel_time);
     return (0);
 }
