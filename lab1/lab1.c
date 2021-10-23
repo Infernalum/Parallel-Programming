@@ -4,8 +4,8 @@
 #include <time.h>
 
 int main(int argc, char** argv) {
-	const int count = 1e8;
-	const int threads = 16;
+	const int count = 1e7;
+	const int threads = 1;
 	int random_seed = 920215;
 	const int expr = 10;
 	int max;
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
 			start = omp_get_wtime();
 #pragma omp parallel num_threads(threads) shared(array, count) reduction(max: max) default(none)
 			{
-#pragma omp for
+#pragma omp for schedule(static, 1)
 				for (i = 0; i < count; i++)
 				{
 					if (array[i] > max) { max = array[i]; };
