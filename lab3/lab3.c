@@ -51,8 +51,7 @@ double InsertionSort(int *array)
         int j = i - 1;
         while (j >= 0 && object[j] > key)
         {
-            object[j + 1] = object[j];
-            --j;
+            object[j + 1] = object[j--];
         }
         object[j + 1] = key;
     }
@@ -137,13 +136,7 @@ double ShellParallelSort(int *array)
                         object[p + step] = key;
                     }
                 }
-            }
-            // #pragma omp single
-            //             {
-            //                 for (int i = 0; i < _SIZE; ++i)
-            //                     printf("%d, ", object[i]);
-            //                 printf("\n");
-            //             }
+            }   
         }
     }
 
