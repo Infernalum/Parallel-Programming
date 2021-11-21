@@ -1,29 +1,48 @@
 {
-    "tasks": [
-        {
-            "type": "cppbuild",
-            "label": "C/C++: gcc сборка активного файла",
-            "command": "/usr/bin/gcc",
-            "args": [
-                //"-g",
-                "-O0",
-                "-fopenmp",
-                "${file}",
-                "-o",
-                "${fileDirname}/build/${fileBasenameNoExtension}",
-            ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "detail": "Задача создана отладчиком."
-        }
-    ],
-    "version": "2.0.0"
+  "tasks": [
+    {
+      "type": "cppbuild",
+      "label": "OpenMP task",
+      "command": "/usr/bin/gcc",
+      "args": [
+        //"-g",
+        "-O0",
+        "-fopenmp",
+        "${file}",
+        "-o",
+        "${fileDirname}/build/${fileBasenameNoExtension}"
+      ],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "Задача создана отладчиком."
+    },
+    {
+      "type": "cppbuild",
+      "label": "MPI task",
+      "command": "mpicc",
+      "args": [
+        "-g",
+        "-O0",
+        "${file}",
+        "-o",
+        "${fileDirname}/build/${fileBasenameNoExtension}"
+      ],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "Задача создана отладчиком."
+    }
+  ],
+  "version": "2.0.0"
 }
