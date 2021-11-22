@@ -6,7 +6,7 @@
       "command": "/usr/bin/gcc",
       "args": [
         //"-g",
-        "-O0",
+        "-O3",
         "-fopenmp",
         "${file}",
         "-o",
@@ -28,7 +28,7 @@
       "command": "mpicc",
       "args": [
         "-g",
-        "-O0",
+        "-O3",
         "${file}",
         "-o",
         "${fileDirname}/build/${fileBasenameNoExtension}"
