@@ -29,6 +29,7 @@
       "args": [
         "-g",
         "-O3",
+        "-fopenmp",
         "${file}",
         "-o",
         "${fileDirname}/build/${fileBasenameNoExtension}"
