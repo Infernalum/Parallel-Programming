@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
+#include <omp.h>
 #include <mpi.h>
 
 int main(int argc, char **argv)
@@ -8,80 +10,63 @@ int main(int argc, char **argv)
 	int size = -1; ///< Total number of processors
 	int rank = -1; ///< This processor's number
 
-	const int count = 1e1;			///< Number of array elements
+	const int count = 1e8;			///< Number of array elements
 	const int random_seed = 920215; ///< RNG seed
 
 	int *array = 0; ///< The array we need to find the max in
 	int lmax = -1;	///< Local xmaximums
 	int max = -1;	///< The maximal element
+	double start, end;
+
+	start = omp_get_wtime(); // 3 вариант
 
 	/* Initialize the MPI */
 	ret = MPI_Init(&argc, &argv);
-	if (!rank)
-	{
-		printf("MPI Init returned (%d);\n", ret);
-	}
 
-	/* Determine our rankand processor count */
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
 	printf("MPI Comm Size: %d;\n", size);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	printf("MPI Comm Rank: %d;\n", rank);
 
-	/* Allocate the array */
 	array = (int *)malloc(count * sizeof(int));
 
 	/* Master generates the array */
-	if (!rank)
+	//if (!rank)
 	{
-		/* Initialize the RNG */
 		srand(random_seed);
-		/* Generate the random array */
 		for (int i = 0; i < count; i++)
 		{
 			array[i] = rand();
 		}
 	}
 
-	//printf("Processor #%d has array: ", rank);
-	//for (int i = 0; i < count; i++) { printf("%d ", array[i]); }
-	//printf("\n");
+	//start = omp_get_wtime(); // 1 вариант
 
 	/* Send the array to all other processors */
-	MPI_Bcast(array, count, MPI_INTEGER, 0, MPI_COMM_WORLD);
+	//MPI_Bcast(array, count, MPI_INTEGER, 0, MPI_COMM_WORLD);
 
-	printf("Processor #%d has array: ", rank);
-	for (int i = 0; i < count; i++)
-	{
-		printf("%d ", array[i]);
-	}
-	printf("\n");
-
+	//start = omp_get_wtime(); // 2 вариант
 	const int wstart = (rank)*count / size;
 	const int wend = (rank + 1) * count / size;
 
-	printf("Processor #%d checks items %d .. %d;\n", rank, wstart, wend - 1);
-
-	for (int i = wstart;
-		 i < wend;
-		 i++)
+	for (int i = wstart; i < wend; i++)
 	{
 		if (array[i] > lmax)
 		{
-			lmax = array[i];
+			if (array[i] > lmax)
+			{
+				lmax = array[i];
+			}
 		}
+
+		MPI_Reduce(&lmax, &max, 1, MPI_INTEGER, MPI_MAX, 0, MPI_COMM_WORLD);
+
+		//end = omp_get_wtime(); // 2 вариант
+
+		ret = MPI_Finalize();
+		end = omp_get_wtime(); // 1 вариант
+
+		printf("time: %f\n", end - start);
+
+		return (0);
 	}
-
-	printf("Processor #%d reports local max = %d;\n", rank, lmax);
-
-	MPI_Reduce(&lmax, &max, 1, MPI_INTEGER, MPI_MAX, 0, MPI_COMM_WORLD);
-
-	ret = MPI_Finalize();
-	if (!rank)
-	{
-		printf("\n*** Global Maximum is %d;\n", max);
-	}
-	printf("MPI Finalize returned (%d);\n", ret);
-
-	return (0);
-}
