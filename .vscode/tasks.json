@@ -7,6 +7,7 @@
       "args": [
         //"-g",
         "-O3",
+        "-lm",
         "-fopenmp",
         "${file}",
         "-o",
@@ -28,6 +29,7 @@
       "command": "mpicc",
       "args": [
         "-g",
+        "-lm",
         "-O3",
         "-fopenmp",
         "${file}",
