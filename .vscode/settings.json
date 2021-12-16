@@ -3,5 +3,6 @@
         "chrono": "c",
         "algorithm": "c",
         "time.h": "c"
-    }
+    },
+    "materialTheme.accent": "Graphite"
 }
