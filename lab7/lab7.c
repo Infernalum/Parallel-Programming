@@ -5,23 +5,15 @@
 #include <omp.h>
 #include <mpi.h>
 
-const long Nstart = 1e7;
-const long Nend = 1e8;
+const long Nstart = 2;
+const long Nend = 1e6;
 
 int isSimple(long value)
 {
-    if (!(value % 2))
-        return 0;
-    if (!(value % 3))
-        return 0;
     int limit = floor(sqrt(value));
-    int real_i = 1;
-    for (int i = 1; real_i <= limit; ++i)
+    for (int i = 2; i <= limit; ++i)
     {
-        real_i = i * 6;
-        if (!(value % (real_i - 1)))
-            return 0;
-        if (!(value % (real_i + 1)))
+        if (!(value % i))
             return 0;
     }
     return 1;
@@ -59,19 +51,13 @@ int main(int argc, char **argv)
 
     long count = 0;
 
-    omp_set_num_threads(omp_get_max_threads());
-#pragma omp parallel num_threads(omp_get_max_threads()) reduction(+ \
-                                                                  : count)
-    {
-#pragma omp for schedule(static)
-        for (long i = wstart; i < wend; ++i)
-            if (isSimple(i))
-            {
-                //printf("Rank: %d; num_thread: %d; чиселко: %d;\n", rank, omp_get_thread_num(), i);
-                ++count;
-                buf[i - wstart] = i;
-            }
-    }
+    for (long i = wstart; i < wend; ++i)
+        if (isSimple(i))
+        {
+            //printf("Rank: %d; num_thread: %d; чиселко: %d;\n", rank, omp_get_thread_num(), i);
+            ++count;
+            buf[i - wstart] = i;
+        }
 
     if (!rank)
     {
@@ -86,9 +72,9 @@ int main(int argc, char **argv)
         //    if (buf[k] != 0)
         //        ++c;
         //printf("%d - summ\n", c);
-        //for (int i = 0; i < wlenght; ++i)
-        //    if (buf[i])
-        //        printf("%d; ", buf[i]);
+        for (int i = 0; i < wlenght; ++i)
+            if (buf[i])
+                printf("%d\n", buf[i]);
         free(buf);
     }
     else

@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "chrono": "c",
+        "algorithm": "c",
+        "time.h": "c",
+        "atomic": "c",
+        "*.tcc": "c",
+        "fstream": "c",
+        "sstream": "c"
+    },
+    "materialTheme.accent": "Graphite"
+}
